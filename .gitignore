@@ -1,0 +1,58 @@
+# Build artifacts
+*.o
+*.lo
+*.la
+*.so
+*.a
+*.dylib
+
+# PHP extension build files
+.libs/
+modules/
+autom4te.cache/
+build/
+config.guess
+config.h
+config.h.in
+config.log
+config.nice
+config.status
+config.sub
+configure
+configure.ac
+install-sh
+libtool
+ltmain.sh
+Makefile.frag
+Makefile.global
+Makefile.objects
+missing
+mkinstalldirs
+run-tests.php
+acinclude.m4
+aclocal.m4
+
+# Go build files
+go_src/libgoroutines.so
+go_src/libgoroutines.h
+go_src/go.sum
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test output
+tests/*.log
+tests/tmp/
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+tmp/
+temp/

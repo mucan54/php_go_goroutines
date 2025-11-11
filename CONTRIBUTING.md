@@ -33,7 +33,7 @@ Feature suggestions are welcome! Please:
 
 1. **Fork the repository**
    ```bash
-   git clone https://github.com/yourusername/php_go_goroutines.git
+   git clone https://github.com/mucan54/php_go_goroutines.git
    cd php_go_goroutines
    ```
 

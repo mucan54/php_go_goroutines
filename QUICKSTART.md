@@ -22,7 +22,7 @@ brew install php go
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/php_go_goroutines.git
+git clone https://github.com/mucan54/php_go_goroutines.git
 cd php_go_goroutines
 
 # Build (automated)
@@ -262,8 +262,8 @@ php -d error_reporting=E_ALL -d display_errors=1 your_script.php
 
 ## Getting Help
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/php_go_goroutines/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/php_go_goroutines/discussions)
+- **Issues**: [GitHub Issues](https://github.com/mucan54/php_go_goroutines/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mucan54/php_go_goroutines/discussions)
 - **Documentation**: [README](README.md)
 
 Happy coding with goroutines in PHP! 🚀

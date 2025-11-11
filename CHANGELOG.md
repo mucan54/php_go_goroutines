@@ -100,6 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For upgrade instructions and migration guides, see [UPGRADING.md](UPGRADING.md) (when available).
 
-[Unreleased]: https://github.com/yourusername/php_go_goroutines/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yourusername/php_go_goroutines/releases/tag/v0.1.0
-[0.0.1]: https://github.com/yourusername/php_go_goroutines/commits/main
+[Unreleased]: https://github.com/mucan54/php_go_goroutines/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/mucan54/php_go_goroutines/releases/tag/v0.1.0
+[0.0.1]: https://github.com/mucan54/php_go_goroutines/commits/main

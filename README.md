@@ -68,7 +68,7 @@ brew install php go
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/php_go_goroutines.git
+git clone https://github.com/mucan54/php_go_goroutines.git
 cd php_go_goroutines
 
 # Build and install
@@ -507,9 +507,9 @@ Developed as a bridge between PHP's ecosystem and Go's concurrency model, demons
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/php_go_goroutines/issues)
-- **Documentation**: [GitHub Wiki](https://github.com/yourusername/php_go_goroutines/wiki)
-- **Discussion**: [GitHub Discussions](https://github.com/yourusername/php_go_goroutines/discussions)
+- **Issues**: [GitHub Issues](https://github.com/mucan54/php_go_goroutines/issues)
+- **Documentation**: [GitHub Wiki](https://github.com/mucan54/php_go_goroutines/wiki)
+- **Discussion**: [GitHub Discussions](https://github.com/mucan54/php_go_goroutines/discussions)
 
 ## Related Projects
 

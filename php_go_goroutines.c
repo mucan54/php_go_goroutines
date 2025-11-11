@@ -196,15 +196,76 @@ PHP_FUNCTION(go_start_delayed)
 }
 /* }}} */
 
+/* {{{ proto int go_execute_php_code(string php_code)
+   Execute PHP code in a goroutine */
+PHP_FUNCTION(go_execute_php_code)
+{
+	char *code = NULL;
+	size_t code_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &code, &code_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	int id = ExecutePHPCode(code);
+	RETURN_LONG(id);
+}
+/* }}} */
+
+/* {{{ proto int go_execute_php_file(string file_path)
+   Execute a PHP file in a goroutine */
+PHP_FUNCTION(go_execute_php_file)
+{
+	char *file_path = NULL;
+	size_t file_path_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &file_path, &file_path_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	int id = ExecutePHPFile(file_path);
+	RETURN_LONG(id);
+}
+/* }}} */
+
+/* {{{ proto int go_execute_php_function(string function_call)
+   Execute a PHP function call in a goroutine */
+PHP_FUNCTION(go_execute_php_function)
+{
+	char *function_call = NULL;
+	size_t function_call_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &function_call, &function_call_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	int id = ExecutePHPFunction(function_call);
+	RETURN_LONG(id);
+}
+/* }}} */
+
+/* {{{ proto void go_cleanup_temp_files()
+   Clean up temporary PHP execution files */
+PHP_FUNCTION(go_cleanup_temp_files)
+{
+	CleanupTempFiles();
+	RETURN_NULL();
+}
+/* }}} */
+
 /* {{{ go_goroutines_functions[]
  */
 const zend_function_entry go_goroutines_functions[] = {
 	PHP_FE(go_start_goroutine, NULL)
 	PHP_FE(go_start_goroutine_with_task, NULL)
+	PHP_FE(go_execute_php_code, NULL)
+	PHP_FE(go_execute_php_file, NULL)
+	PHP_FE(go_execute_php_function, NULL)
 	PHP_FE(go_check_status, NULL)
 	PHP_FE(go_get_result, NULL)
 	PHP_FE(go_wait, NULL)
 	PHP_FE(go_cleanup, NULL)
+	PHP_FE(go_cleanup_temp_files, NULL)
 	PHP_FE(go_get_stats, NULL)
 	PHP_FE(go_start_delayed, NULL)
 	PHP_FE_END

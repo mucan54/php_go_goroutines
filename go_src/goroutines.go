@@ -12,7 +12,13 @@ typedef struct {
 */
 import "C"
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"runtime"
 	"sync"
 	"time"
@@ -25,6 +31,7 @@ var (
 	resultsMu sync.RWMutex
 	nextID    = 0
 	idMu      sync.Mutex
+	tempDir   string
 )
 
 // GoRoutineResult holds the result of a goroutine execution
@@ -47,6 +54,10 @@ func getNextID() int {
 func InitGoRuntime() {
 	// Initialize Go runtime with multiple threads for goroutines
 	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	// Create temp directory for PHP execution
+	tempDir = filepath.Join(os.TempDir(), "go_goroutines_php")
+	os.MkdirAll(tempDir, 0755)
 }
 
 //export StartGoroutine
@@ -106,6 +117,153 @@ func StartGoroutineWithTask(task *C.char) C.int {
 	}()
 
 	return C.int(id)
+}
+
+//export ExecutePHPCode
+func ExecutePHPCode(phpCode *C.char) C.int {
+	id := getNextID()
+	code := C.GoString(phpCode)
+
+	result := &GoRoutineResult{
+		Done: false,
+	}
+
+	resultsMu.Lock()
+	results[id] = result
+	resultsMu.Unlock()
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				result.Error = fmt.Errorf("panic: %v", r)
+				result.Done = true
+			}
+		}()
+
+		// Execute PHP code
+		output, err := executePHP(code)
+		if err != nil {
+			result.Error = err
+			result.Result = fmt.Sprintf("Error: %v", err)
+		} else {
+			result.Result = output
+		}
+		result.Done = true
+	}()
+
+	return C.int(id)
+}
+
+//export ExecutePHPFile
+func ExecutePHPFile(phpFilePath *C.char) C.int {
+	id := getNextID()
+	filePath := C.GoString(phpFilePath)
+
+	result := &GoRoutineResult{
+		Done: false,
+	}
+
+	resultsMu.Lock()
+	results[id] = result
+	resultsMu.Unlock()
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				result.Error = fmt.Errorf("panic: %v", r)
+				result.Done = true
+			}
+		}()
+
+		// Execute PHP file
+		output, err := executePHPFile(filePath)
+		if err != nil {
+			result.Error = err
+			result.Result = fmt.Sprintf("Error: %v", err)
+		} else {
+			result.Result = output
+		}
+		result.Done = true
+	}()
+
+	return C.int(id)
+}
+
+//export ExecutePHPFunction
+func ExecutePHPFunction(functionCall *C.char) C.int {
+	id := getNextID()
+	funcCall := C.GoString(functionCall)
+
+	result := &GoRoutineResult{
+		Done: false,
+	}
+
+	resultsMu.Lock()
+	results[id] = result
+	resultsMu.Unlock()
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				result.Error = fmt.Errorf("panic: %v", r)
+				result.Done = true
+			}
+		}()
+
+		// Build PHP code to call function
+		phpCode := fmt.Sprintf("<?php\n%s\n?>", funcCall)
+
+		output, err := executePHP(phpCode)
+		if err != nil {
+			result.Error = err
+			result.Result = fmt.Sprintf("Error: %v", err)
+		} else {
+			result.Result = output
+		}
+		result.Done = true
+	}()
+
+	return C.int(id)
+}
+
+// executePHP executes PHP code and returns output
+func executePHP(code string) (string, error) {
+	// Create temp file with unique name
+	hash := md5.Sum([]byte(code + time.Now().String()))
+	filename := hex.EncodeToString(hash[:]) + ".php"
+	tmpFile := filepath.Join(tempDir, filename)
+
+	// Write PHP code to temp file
+	if err := ioutil.WriteFile(tmpFile, []byte(code), 0644); err != nil {
+		return "", fmt.Errorf("failed to write temp file: %v", err)
+	}
+	defer os.Remove(tmpFile)
+
+	// Execute PHP
+	cmd := exec.Command("php", tmpFile)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return string(output), fmt.Errorf("PHP execution failed: %v", err)
+	}
+
+	return string(output), nil
+}
+
+// executePHPFile executes a PHP file and returns output
+func executePHPFile(filePath string) (string, error) {
+	// Check if file exists
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return "", fmt.Errorf("file not found: %s", filePath)
+	}
+
+	// Execute PHP file
+	cmd := exec.Command("php", filePath)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return string(output), fmt.Errorf("PHP execution failed: %v", err)
+	}
+
+	return string(output), nil
 }
 
 //export CheckGoroutineStatus
@@ -230,6 +388,14 @@ func StartGoroutineWithCallback(sleepMs C.int) C.int {
 	}()
 
 	return C.int(id)
+}
+
+//export CleanupTempFiles
+func CleanupTempFiles() {
+	if tempDir != "" {
+		os.RemoveAll(tempDir)
+		os.MkdirAll(tempDir, 0755)
+	}
 }
 
 //export FreeString
